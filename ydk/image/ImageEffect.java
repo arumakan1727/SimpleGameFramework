@@ -100,4 +100,25 @@ public class ImageEffect
         }
     }
 
+    public static void addRGB(BufferedImage img, int R, int G, int B)
+    {
+        final int H = img.getHeight();
+        final int W = img.getWidth();
+
+        for (int y = 0; y < H; y++) {
+            for (int x = 0; x < W; x++) {
+                final int c = img.getRGB(x, y);
+                // 0 ~ 255 の値に収まるように max(), min() を取る
+                int newR = Math.min( getR(c)+R, 255 );
+                int newG = Math.min( getG(c)+G, 255 );
+                int newB = Math.min( getB(c)+B, 255 );
+                newR = Math.max( 0, newR );
+                newG = Math.max( 0, newG );
+                newB = Math.max( 0, newB );
+
+                img.setRGB(x, y, makeRGB(newR, newG, newB));
+            }
+        }
+    }
+
 }

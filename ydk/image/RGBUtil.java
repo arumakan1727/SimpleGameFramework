@@ -18,9 +18,9 @@ public class RGBUtil
     }
 
     public static int makeRGB(int r, int g, int b) {
-        return 0xff00_0000 | r<<16 | g<<8 | b;
+        return (0xff00_0000 | r<<16 | g<<8 | b);
     }
     public static int makeARGB(int a, int r, int g, int b) {
-        return a<<24 | r<<16 | g<<8 | b;
+        return (a<<24 | r<<16 | g<<8 | b);
     }
 }

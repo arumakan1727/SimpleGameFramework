@@ -1,12 +1,12 @@
 package ydk.game.engine;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
-public abstract class GameProcess
+public interface GameProcess
 {
-    public abstract void initialize();
+    void initialize();
 
-    public abstract void update();
+    void update();
 
-    public abstract void render(Graphics g);
+    void render(Graphics2D g2d);
 }

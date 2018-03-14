@@ -1,7 +1,7 @@
 package ydk.game.engine;
 
 import javax.swing.JFrame;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
 
@@ -13,7 +13,7 @@ public class GameEngine implements Runnable
 
     private boolean running = false;
     private int     fps     = 60;
-    private long    PERIOD  = (long)(1.0 / fps * 1_000_000_000);
+    private long period = (long)(1.0 / fps * 1_000_000_000);
     private Thread  gameThread;
 
     public GameEngine(final int width, final int height, GameProcess proc)
@@ -53,14 +53,14 @@ public class GameEngine implements Runnable
         beforeTime = System.nanoTime();
 //        FPSCalculator fpsCalculator = new FPSCalculator(beforeTime);
 
-        while (running)
+        while (this.running)
         {
             this.gameUpdate();
 
             currentTime = System.nanoTime();
             timeDiff = currentTime - beforeTime;
             // 前回のフレームの休止時間誤差も引いておく
-            sleepTime = (PERIOD - timeDiff) - overSleepTime;
+            sleepTime = (this.period - timeDiff) - overSleepTime;
 
             if (sleepTime > 0) { // 休止時間が取れる場合
                 try {
@@ -79,7 +79,7 @@ public class GameEngine implements Runnable
                 }
             }
             beforeTime = System.nanoTime();
-//            fpsCalculator.calcFPS(this.PERIOD);
+//            fpsCalculator.calcFPS(this.period);
         }
     }
 
@@ -116,10 +116,12 @@ public class GameEngine implements Runnable
         return this.canvas;
     }
 
-    public void setFps(int fps)
+    public void setFps(int fps) throws IllegalArgumentException
     {
+        if (fps <= 0)
+            throw (new IllegalArgumentException());
         this.fps = fps;
-        this.PERIOD = (long)(1.0 / fps * 1_000_000_000);
+        this.period = (long)(1.0 / fps * 1_000_000_000);
     }
 
     public int getFps()
@@ -127,22 +129,24 @@ public class GameEngine implements Runnable
         return this.fps;
     }
 
-    public long getPERIOD()
+    public long getPeriod()
     {
-        return this.PERIOD;
+        return this.period;
     }
 
     private void gameUpdate()
     {
         process.update();
 
-        BufferStrategy strategy = this.canvas.getBufferStrategy();
+        final BufferStrategy strategy = this.canvas.getBufferStrategy();
 
         if (!strategy.contentsLost())
         {
-            Graphics g = strategy.getDrawGraphics();
+            Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
             process.render(g);
-            g.dispose();
+            if (g != null) {
+                g.dispose();
+            }
             strategy.show();
         } else {
             System.out.println("BufferStrategy lost");
