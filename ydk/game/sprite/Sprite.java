@@ -1,6 +1,7 @@
 package ydk.game.sprite;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public abstract class Sprite
 
     public abstract void update();
 
-    public abstract void draw(Graphics g);
+    public abstract void draw(Graphics2D g2d);
 
     public boolean isVanished() {
         return this.vanished;
@@ -43,7 +44,7 @@ public abstract class Sprite
         }
     }
 
-    public static void draw(List<? extends Sprite> list, Graphics g)
+    public static void draw(List<? extends Sprite> list, Graphics2D g2d)
     {
         Iterator<? extends Sprite> it = list.iterator();
         while (it.hasNext())
@@ -53,7 +54,7 @@ public abstract class Sprite
                 it.remove();
             }
             else if (s.visible) {
-                s.draw(g);
+                s.draw(g2d);
             }
         }
     }
