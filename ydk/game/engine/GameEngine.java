@@ -8,7 +8,7 @@ import java.awt.image.BufferStrategy;
 public class GameEngine implements Runnable
 {
     private final JFrame window;
-    private final GamePanel canvas;
+    private final GameCanvas canvas;
     private final GameProcess process;
 
     private boolean running = false;
@@ -24,7 +24,7 @@ public class GameEngine implements Runnable
     public GameEngine(final int width, final int height, GameProcess proc, int numBuffer)
     {
         this.window = new JFrame();
-        this.canvas = new GamePanel(width, height);
+        this.canvas = new GameCanvas(width, height);
         this.process = proc;
 
         this.window.addNotify();
@@ -111,7 +111,7 @@ public class GameEngine implements Runnable
         return this.window;
     }
 
-    public GamePanel getCanvas()
+    public GameCanvas getCanvas()
     {
         return this.canvas;
     }
