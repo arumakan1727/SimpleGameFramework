@@ -1,8 +1,10 @@
 package ydk.image;
 
-public class RGBUtil
+import java.awt.image.BufferedImage;
+
+public class ImageUtil
 {
-    private RGBUtil() {}
+    private ImageUtil() {}
 
     public static int getA(int color) {
         return (color >>> 24);
@@ -22,5 +24,12 @@ public class RGBUtil
     }
     public static int makeARGB(int a, int r, int g, int b) {
         return (a<<24 | r<<16 | g<<8 | b);
+    }
+
+    public static BufferedImage imageCopy(final BufferedImage img)
+    {
+        BufferedImage cp = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
+        cp.setData(img.getData());
+        return cp;
     }
 }

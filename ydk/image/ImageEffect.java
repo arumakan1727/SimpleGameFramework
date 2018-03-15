@@ -1,6 +1,6 @@
 package ydk.image;
 
-import static ydk.image.RGBUtil.*;
+import static ydk.image.ImageUtil.*;
 
 import java.awt.image.BufferedImage;
 
