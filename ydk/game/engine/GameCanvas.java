@@ -3,14 +3,15 @@ package ydk.game.engine;
 import java.awt.Canvas;
 import java.awt.Dimension;
 
-public class GamePanel extends Canvas
+public class GameCanvas extends Canvas
 {
-    public GamePanel(int width, int height)
+    public GameCanvas(int width, int height)
     {
         Dimension dimension = new Dimension(width, height);
         this.setPreferredSize(dimension);
         this.setMaximumSize(dimension);
         this.setMinimumSize(dimension);
+        this.setFocusable(true);
     }
 
     public void setBuffering(final int numBuffers) throws IllegalArgumentException
