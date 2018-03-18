@@ -1,6 +1,7 @@
 package ydk.game.engine;
 
 import javax.swing.JFrame;
+import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
@@ -8,7 +9,7 @@ import java.awt.image.BufferStrategy;
 public class GameEngine implements Runnable
 {
     private final JFrame window;
-    private final GameCanvas canvas;
+    private final BufferingRenderer renderer;
     private final GameProcess process;
 
     private boolean running = false;
@@ -16,20 +17,20 @@ public class GameEngine implements Runnable
     private long period = (long)(1.0 / fps * 1_000_000_000);
     private Thread  gameThread;
 
-    public GameEngine(final int width, final int height, GameProcess proc)
-    {
-        this(width, height, proc, 2);
-    }
-
-    public GameEngine(final int width, final int height, GameProcess proc, int numBuffer)
+    public GameEngine(BufferingRenderer renderer, GameProcess proc)
+            throws IllegalArgumentException
     {
         this.window = new JFrame();
-        this.canvas = new GameCanvas(width, height);
+        this.renderer = renderer;
         this.process = proc;
+
+        if (!(renderer instanceof Component)) {
+            throw new IllegalArgumentException("Instance of BufferingRenderer is Not Component.");
+        }
 
         this.window.addNotify();
         this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.window.add(canvas);
+        this.window.add((Component) this.renderer);
         this.window.pack();
         this.window.setResizable(false);
         this.window.setLocationRelativeTo(null);
@@ -37,10 +38,8 @@ public class GameEngine implements Runnable
         this.window.setFocusable(true);
         this.window.requestFocus();
 
-        this.canvas.setBuffering(numBuffer);
-        this.canvas.setFocusable(true);
+        this.renderer.setDoubleBuffering();
 
-        this.process.initialize();
     }
 
     @Override
@@ -90,9 +89,8 @@ public class GameEngine implements Runnable
         {
             this.gameThread = new Thread(this);
         }
-//        SwingUtilities.invokeLater(gameThread);
+        this.process.initialize();
         gameThread.start();
-        canvas.requestFocus();
         System.out.println("GameLoop start");
     }
 
@@ -111,9 +109,9 @@ public class GameEngine implements Runnable
         return this.window;
     }
 
-    public GameCanvas getCanvas()
+    public BufferingRenderer getBufferingRenderer()
     {
-        return this.canvas;
+        return this.renderer;
     }
 
     public void setFps(int fps) throws IllegalArgumentException
@@ -138,20 +136,12 @@ public class GameEngine implements Runnable
     {
         process.update();
 
-        final BufferStrategy strategy = this.canvas.getBufferStrategy();
+        final Graphics2D g2d = renderer.getRenderer();
 
-        if (!strategy.contentsLost())
-        {
-            Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
-            process.render(g);
-            if (g != null) {
-                g.dispose();
-            }
-            strategy.show();
-        } else {
-            System.out.println("BufferStrategy lost");
+        if (g2d != null) {
+            process.render(g2d);
+            g2d.dispose();
         }
-
-        Toolkit.getDefaultToolkit().sync();
+        renderer.showBuffer();
     }
 }
