@@ -10,7 +10,7 @@ public abstract class Sprite
     private boolean vanished = false;
     private boolean visible = true;
 
-    public abstract void update();
+    public abstract void update(double eta);
 
     public abstract void draw(Graphics2D g2d);
 
@@ -58,7 +58,7 @@ public abstract class Sprite
             if (s.vanished) {
                 it.remove();
             } else {
-                s.update();
+                s.update(1);
             }
         }
     }
