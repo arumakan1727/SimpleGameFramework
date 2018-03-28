@@ -33,6 +33,13 @@ public class GamePanel
     @Override
     public Graphics2D getRenderer()
     {
+        if (buffer == null) {
+            buffer = new BufferedImage(
+                    this.getWidth(),
+                    this.getHeight(),
+                    BufferedImage.TYPE_INT_RGB
+            );
+        }
         g2d = buffer.createGraphics();
         return g2d;
     }
