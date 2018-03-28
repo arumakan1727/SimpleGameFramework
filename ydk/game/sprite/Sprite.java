@@ -1,6 +1,7 @@
 package ydk.game.sprite;
 
 import java.awt.Graphics2D;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -52,29 +53,34 @@ public abstract class Sprite
     public static void update(List<? extends Sprite> list)
     {
         Iterator<? extends Sprite> it = list.iterator();
-        while (it.hasNext())
-        {
-            Sprite s = it.next();
-            if (s.vanished) {
-                it.remove();
-            } else {
-                s.update(1);
+        try {
+            while (it.hasNext()) {
+                Sprite s = it.next();
+                if (s.vanished) {
+                    it.remove();
+                } else {
+                    s.update(1);
+                }
             }
+        } catch (ConcurrentModificationException e){
+            e.printStackTrace();
         }
     }
 
     public static void draw(List<? extends Sprite> list, Graphics2D g2d)
     {
         Iterator<? extends Sprite> it = list.iterator();
-        while (it.hasNext())
-        {
-            Sprite s = it.next();
-            if (s.vanished) {
-                it.remove();
+        try {
+            while (it.hasNext()) {
+                Sprite s = it.next();
+                if (s.vanished) {
+                    it.remove();
+                } else if (s.visible) {
+                    s.draw(g2d);
+                }
             }
-            else if (s.visible) {
-                s.draw(g2d);
-            }
+        } catch (ConcurrentModificationException e) {
+            e.printStackTrace();
         }
     }
 }
